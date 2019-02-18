@@ -1,0 +1,20 @@
+{
+  "name": "nuxt-authenticator-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "nuxt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vohzd/nuxt-authenticator-frontend.git"
+  },
+  "author": "vohzd",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vohzd/nuxt-authenticator-frontend/issues"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.3.6",
+    "nuxt": "^2.4.3"
+  }
+}
