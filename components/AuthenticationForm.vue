@@ -3,8 +3,7 @@
     <h2>{{ headerText }}</h2>
     <input type="text" placeholder="email" v-model="email" @keyup.enter="handleLogin" :class="emailInputClass()" />
     <input placeholder="password" v-model="password" @keyup.enter="handleLogin" v-if="needsRegister"/>
-    <button @click="handleLogin" :disabled="!isEmailValid()" :class="emailInputClass() ">Go</button>
-    <div class="helper-message mt" v-if="loginHelperMessage">{{ loginHelperMessage }}</div>
+    <button @click="handleLogin" :disabled="!isEmailValid()" :class="emailInputClass() "><span v-if="!isLoading">Go</span><span v-if="isLoading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></span></button>
   </section>
 </template>
 
@@ -16,13 +15,14 @@ export default {
       password: "",
       needsRegister: false,
       headerText: "",
-      loginHelperMessage: "",
+      isLoading: false,
       regEx: /\S+@\S+\.\S+/
     }
   },
   methods: {
     checkEmailExists(){
-      console.log("check me pls")
+      this.isLoading = true;
+      return "should be nothing here for now...";
     },
     /*
     isEmailValid(){
@@ -34,9 +34,9 @@ export default {
     isEmailValid(){
       return (this.regEx.test(this.email)) ? true : false;
     },
-    handleLogin(){
-      this.loginHelperMessage = "";
-      !this.email ? this.loginHelperMessage = "Enter your email plz" : this.checkEmailExists();
+    async handleLogin(){
+      let emailExists = await this.checkEmailExists();
+      console.log(emailExists);
 
       /*
       if (!this.email || !this.password){
@@ -57,17 +57,61 @@ export default {
 
   .authentication-form {
     text-align: center;
-    margin-top: 64px;
+    margin-top: 24px;
+  }.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 10px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 1px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.15);
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 6px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 6px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 26px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 45px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
   }
-
-  .helper-message {
-    width: calc(100% - 16px);
-    background: rgba(var(--r), var(--g), var(--b), 0.1);
-    padding: 8px;
-    font-weight: 700;
+  100% {
+    transform: scale(1);
   }
-
-
-
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(19px, 0);
+  }
+}
 
 </style>
