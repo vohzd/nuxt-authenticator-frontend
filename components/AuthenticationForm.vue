@@ -2,7 +2,7 @@
   <section class="authentication-form">
     <h2>{{ headerText }}</h2>
     <input class="mt" type="text" placeholder="email" v-model="email" @keyup.enter.prevent="handleLogin" :class="generateFormValidationClass()" />
-    <input class="mt" type="password" placeholder="password" v-model="password" @keyup.enter.prevent="handleLogin" v-if="needsRegister" :class="generateFormValidationClass()" />
+    <input class="mt" type="password" placeholder="password" v-model="password" @keyup.enter.prevent="handleLogin" v-if="needsPassword" :class="generateFormValidationClass()" />
     <button class="mt" @click="handleLogin" :disabled="!isFormValid()" :class="generateFormValidationClass() "><span v-if="!isLoading">Go</span><span v-if="isLoading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></span></button>
   </section>
 </template>
@@ -13,7 +13,7 @@ export default {
     return {
       email: "",
       password: "",
-      needsRegister: false,
+      needsPassword: false,
       headerText: "Enter your email",
       isLoading: false,
       regEx: /\S+@\S+\.\S+/
@@ -27,24 +27,40 @@ export default {
       return res.data.userExists;
     },
     generateFormValidationClass(){
-      return this.needsRegister ? (!this.email && !this.password) ? "" : (this.isFormValid()) ? "valid-input" : "invalid-input" : (!this.email) ? "" : (this.isFormValid()) ? "valid-input" : "invalid-input"
+      return this.needsPassword ? (!this.email && !this.password) ? "" : (this.isFormValid()) ? "valid-input" : "invalid-input" : (!this.email) ? "" : (this.isFormValid()) ? "valid-input" : "invalid-input"
     },
     isFormValid(){
-      return this.needsRegister ? ((this.regEx.test(this.email) && this.password.length) ? true : false) : (this.regEx.test(this.email)) ? true : false;
+      return this.needsPassword ? ((this.regEx.test(this.email) && this.password.length) ? true : false) : (this.regEx.test(this.email)) ? true : false;
     },
     async handleLogin(){
-      if (await this.checkEmailExists){
-        this.needsRegister = true;
-        this.headerText = "Please register for an account."
+      this.needsPassword = true;
+      if (await this.checkEmailExists()){
+        this.headerText = "Welcome back";
+        if (this.password){
+          this.login();
+          console.log("go and do the login");
+        }
       }
       else {
-        console.log("does exist exist")
+        this.headerText = "Please register for an account."
+
+        console.log("does not exist exist")
+
+        /*
+        if (this.needsPassword && this.password){
+          let res = await this.register();
+        }
+        else {
+          console.log("register ne oks");
+          this.needsPassword = true;
+          this.headerText = "Please register for an account."
+        }*/
       }
 
       /*
       await this.checkEmailExists() ?
-      this.needsRegister = !
-      console.log(this.needsRegister);*/
+      this.needsPassword = !
+      console.log(this.needsPassword);*/
 
       //emailExists ? console.log("show welcome back") : console.log("show password");
 
@@ -56,15 +72,43 @@ export default {
         console.log("do something...")
       }*/
     },
-    registerReset(){
-      this.needsRegister = false;
+    async register(){
+      this.isLoading = true;
+      let res = await this.$axios.post(`http://localhost:1337/register/`, {
+        email: this.email,
+        password: this.password
+      });
+      this.isLoading = false;
+      console.log(res);
+    },
+    login(){
+      this.isLoading = true;
+      this.$axios.post(`http://localhost:1337/login/`, {
+        email: this.email,
+        password: this.password
+      }).then((res) => {
+        console.log(res);
+      }).catch((e) => {
+        console.log(e);
+      });
+      /*
+
+      if (res.status === 401){
+        this.headerText = "Wrong Password";
+      }
+      this.isLoading = false;
+
+      console.log(res);*/
+    },
+    reset(){
+      this.needsPassword = false;
       this.headerText = "Enter your email";
       this.password = "";
     }
   },
   watch: {
     email(){
-      this.registerReset();
+      this.reset();
     }
   }
 }
