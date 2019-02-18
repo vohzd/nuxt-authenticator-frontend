@@ -2,7 +2,7 @@
   <section class="authentication-form">
     <h2>{{ headerText }}</h2>
     <input class="mt" type="text" placeholder="email" v-model="email" @keyup.enter.prevent="handleLogin" :class="generateFormValidationClass()" />
-    <input class="mt" type="password" placeholder="password" v-model="password" @keyup.enter.prevent="handleLogin" v-if="needsRegister"/>
+    <input class="mt" type="password" placeholder="password" v-model="password" @keyup.enter.prevent="handleLogin" v-if="needsRegister" :class="generateFormValidationClass()" />
     <button class="mt" @click="handleLogin" :disabled="!isFormValid()" :class="generateFormValidationClass() "><span v-if="!isLoading">Go</span><span v-if="isLoading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></span></button>
   </section>
 </template>
@@ -27,7 +27,7 @@ export default {
       return res.data.userExists;
     },
     generateFormValidationClass(){
-      return (!this.email) ? "" : (this.isFormValid()) ? "valid-input" : "invalid-input"
+      return this.needsRegister ? (!this.email && !this.password) ? "" : (this.isFormValid()) ? "valid-input" : "invalid-input" : (!this.email) ? "" : (this.isFormValid()) ? "valid-input" : "invalid-input"
     },
     isFormValid(){
       return this.needsRegister ? ((this.regEx.test(this.email) && this.password.length) ? true : false) : (this.regEx.test(this.email)) ? true : false;
