@@ -21,6 +21,7 @@ export default {
   },
   methods: {
     async checkEmailExists(){
+      console.log("on this one??")
       this.isLoading = true;
       let res = await this.$axios.get(`http://localhost:1337/user/${this.email}/`);
       this.isLoading = false;
@@ -42,35 +43,17 @@ export default {
         }
       }
       else {
-        this.headerText = "Please register for an account."
-
-        console.log("does not exist exist")
-
-        /*
-        if (this.needsPassword && this.password){
+        this.headerText = "Please register for an account.";
+        if (this.password){
           let res = await this.register();
+          if (res.status === 200){
+            console.log("logged in...");
+            console.log(res.data.user);
+            this.isLoading = false;
+          }
         }
-        else {
-          console.log("register ne oks");
-          this.needsPassword = true;
-          this.headerText = "Please register for an account."
-        }*/
+
       }
-
-      /*
-      await this.checkEmailExists() ?
-      this.needsPassword = !
-      console.log(this.needsPassword);*/
-
-      //emailExists ? console.log("show welcome back") : console.log("show password");
-
-      /*
-      if (!this.email || !this.password){
-        this.loginHelperMessage = "Please fill out the form";
-      }
-      else {
-        console.log("do something...")
-      }*/
     },
     async register(){
       this.isLoading = true;
@@ -88,6 +71,8 @@ export default {
         password: this.password
       }).then((res) => {
         console.log(res);
+        this.isLoading = false;
+
       }).catch((e) => {
         console.log(e);
       });
