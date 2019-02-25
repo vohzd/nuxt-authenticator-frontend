@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
+
 export default {
   data (){
     return {
@@ -20,6 +22,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      "setIsLoggedIn"
+    ]),
     async checkEmailExists(){
       this.isLoading = true;
       let res = await this.$axios.get(`http://localhost:1337/user/${this.email}/`);
@@ -33,9 +38,17 @@ export default {
       return this.needsPassword ? ((this.regEx.test(this.email) && this.password.length) ? true : false) : (this.regEx.test(this.email)) ? true : false;
     },
     async checkAuthState(){
-      console.log("oh hello...");
-      let state = await this.$axios.get(`http://localhost:1337/checkAuthState`, { withCredentials: true });
-      console.log(state);
+      try {
+        let r = await this.$axios.get(`http://localhost:1337/checkAuthState`, { withCredentials: true });
+        if (r.status === 200){
+          this.setIsLoggedIn(true);
+        }
+      }
+      catch (e){
+        if (e.response.status === 401){
+          this.setIsLoggedIn(false);
+        }
+      }
     },
     async handleLogin(){
       this.needsPassword = true;

@@ -1,5 +1,6 @@
 export default {
   setIsLoggedIn({ commit }, bool){
-    SET_IS_LOGGED_IN(bool);
+    console.log("called????")
+    commit("SET_IS_LOGGED_IN", bool);
   }
 }

@@ -1,5 +1,5 @@
 import state from "./state.js";
 
 export default {
-  isLoggedIn: () => state.isLoggedIn
+  isLoggedIn: (state) => state.isLoggedIn
 }
