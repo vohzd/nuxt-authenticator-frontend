@@ -21,7 +21,6 @@ export default {
   },
   methods: {
     async checkEmailExists(){
-      console.log("on this one??")
       this.isLoading = true;
       let res = await this.$axios.get(`http://localhost:1337/user/${this.email}/`);
       this.isLoading = false;
@@ -33,13 +32,17 @@ export default {
     isFormValid(){
       return this.needsPassword ? ((this.regEx.test(this.email) && this.password.length) ? true : false) : (this.regEx.test(this.email)) ? true : false;
     },
+    async checkAuthState(){
+      console.log("oh hello...");
+      let state = await this.$axios.get(`http://localhost:1337/checkAuthState`, { withCredentials: true });
+      console.log(state);
+    },
     async handleLogin(){
       this.needsPassword = true;
       if (await this.checkEmailExists()){
         this.headerText = "Welcome back";
         if (this.password){
           this.login();
-          console.log("go and do the login");
         }
       }
       else {
@@ -47,8 +50,8 @@ export default {
         if (this.password){
           let res = await this.register();
           if (res.status === 200){
-            console.log("logged in...");
-            console.log(res.data.user);
+            console.log("logging in...")
+            this.login();
             this.isLoading = false;
           }
         }
@@ -57,39 +60,29 @@ export default {
     },
     async register(){
       this.isLoading = true;
-      let res = await this.$axios.post(`http://localhost:1337/register/`, {
+      return await this.$axios.post(`http://localhost:1337/register/`, {
         email: this.email,
         password: this.password
       });
-      this.isLoading = false;
-      console.log(res);
     },
-    login(){
+    async login(){
       this.isLoading = true;
-      this.$axios.post(`http://localhost:1337/login/`, {
-        email: this.email,
-        password: this.password
-      }).then((res) => {
-        console.log(res);
-        this.isLoading = false;
+      let res = await this.$axios.post(`http://localhost:1337/login/`, { email: this.email, password: this.password }, { withCredentials: true });
+      console.log("logging in...");
+      console.log(res);
 
-      }).catch((e) => {
-        console.log(e);
-      });
-      /*
-
-      if (res.status === 401){
-        this.headerText = "Wrong Password";
-      }
-      this.isLoading = false;
-
-      console.log(res);*/
+      console.log("OK YOU LITTLE FUCK NUGGET>>> DO A REQUEST...");
+      this.checkAuthState();
     },
     reset(){
+      this.isLoading = false;
       this.needsPassword = false;
       this.headerText = "Enter your email";
       this.password = "";
     }
+  },
+  mounted(){
+    this.checkAuthState();
   },
   watch: {
     email(){
