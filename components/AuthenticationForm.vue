@@ -23,6 +23,7 @@ export default {
   },
   methods: {
     ...mapActions([
+      "checkAuthState",
       "setIsLoggedIn"
     ]),
     async checkEmailExists(){
@@ -36,19 +37,6 @@ export default {
     },
     isFormValid(){
       return this.needsPassword ? ((this.regEx.test(this.email) && this.password.length) ? true : false) : (this.regEx.test(this.email)) ? true : false;
-    },
-    async checkAuthState(){
-      try {
-        let r = await this.$axios.get(`http://localhost:1337/checkAuthState`, { withCredentials: true });
-        if (r.status === 200){
-          this.setIsLoggedIn(true);
-        }
-      }
-      catch (e){
-        if (e.response.status === 401){
-          this.setIsLoggedIn(false);
-        }
-      }
     },
     async handleLogin(){
       this.needsPassword = true;
@@ -68,7 +56,6 @@ export default {
             this.isLoading = false;
           }
         }
-
       }
     },
     async register(){
@@ -81,10 +68,6 @@ export default {
     async login(){
       this.isLoading = true;
       let res = await this.$axios.post(`http://localhost:1337/login/`, { email: this.email, password: this.password }, { withCredentials: true });
-      console.log("logging in...");
-      console.log(res);
-
-      console.log("OK YOU LITTLE FUCK NUGGET>>> DO A REQUEST...");
       this.checkAuthState();
     },
     reset(){
@@ -93,9 +76,6 @@ export default {
       this.headerText = "Enter your email";
       this.password = "";
     }
-  },
-  mounted(){
-    this.checkAuthState();
   },
   watch: {
     email(){
@@ -108,13 +88,7 @@ export default {
 <style lang="css">
 
 .authentication-form {
-    text-align: center;
-    margin-top: 24px;
-    display: flex;
-    flex-wrap: wrap;
-    width: 50%;
-    margin-right: 25%;
-    margin-left: 25%;
+
 }
 
   .authentication-form input {

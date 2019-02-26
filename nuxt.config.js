@@ -4,8 +4,6 @@ module.exports = {
   ],
   axios: {
     baseURL: "/",
-    //baseURL: "/blc",
-    proxyHeaders: false,
     credentials: true
   }
 }
