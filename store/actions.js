@@ -24,6 +24,12 @@ export default {
       console.log(e);
     }
   },
+  async sendEmail({ commit, dispatch }, email){
+    console.log("pls send the email");
+    console.log(email);
+    let req = await this.$axios.post(`http://localhost:1337/email/send`, { email });
+    console.log(req);
+  },
   setIsLoggedIn({ commit, dispatch }, bool){
     commit("SET_IS_LOGGED_IN", bool);
     dispatch("setHasCheckedInitialAuth", true);

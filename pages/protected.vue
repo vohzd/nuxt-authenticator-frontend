@@ -1,13 +1,9 @@
 <template lang="html">
-  <section>
-    <h1>This is a protected resource</h1>
-  </section>
+  <main class="container">
+    <h2>Protected Route...</h2>
+  </main>
 </template>
 
 <script>
-export default {
-}
-</script>
 
-<style lang="css">
-</style>
+</script>

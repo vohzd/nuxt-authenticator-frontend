@@ -4,6 +4,7 @@
     <input class="mt" type="text" placeholder="email" v-model="email" @keyup.enter.prevent="handleLogin" :class="generateFormValidationClass()" />
     <input class="mt" type="password" placeholder="password" v-model="password" @keyup.enter.prevent="handleLogin" v-if="needsPassword" :class="generateFormValidationClass()" />
     <button class="mt" @click="handleLogin" :disabled="!isFormValid()" :class="generateFormValidationClass() "><span v-if="!isLoading">Go</span><span v-if="isLoading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></span></button>
+    <nuxt-link to="/forgot" v-if="needsPassword" >Forgot password?</nuxt-link>
   </section>
 </template>
 
@@ -95,61 +96,7 @@ export default {
     width: 100%;
   }
 
-.lds-ellipsis {
-    display: inline-block;
-    position: relative;
-    width: 64px;
-    height: 10px;
-}
-.lds-ellipsis div {
-    position: absolute;
-    top: 1px;
-    width: 11px;
-    height: 11px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.15);
-    animation-timing-function: cubic-bezier(0, 1, 1, 0);
-}
-.lds-ellipsis div:nth-child(1) {
-    left: 6px;
-    animation: lds-ellipsis1 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(2) {
-    left: 6px;
-    animation: lds-ellipsis2 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(3) {
-    left: 26px;
-    animation: lds-ellipsis2 0.6s infinite;
-}
-.lds-ellipsis div:nth-child(4) {
-    left: 45px;
-    animation: lds-ellipsis3 0.6s infinite;
-}
-@keyframes lds-ellipsis1 {
-    0% {
-        transform: scale(0);
-   }
-    100% {
-        transform: scale(1);
-   }
-}
-@keyframes lds-ellipsis3 {
-    0% {
-        transform: scale(1);
-   }
-    100% {
-        transform: scale(0);
-   }
-}
-@keyframes lds-ellipsis2 {
-    0% {
-        transform: translate(0, 0);
-   }
-    100% {
-        transform: translate(19px, 0);
-   }
-}
+
 
 
 
