@@ -24,10 +24,8 @@ export default {
       console.log(e);
     }
   },
-  async sendEmail({ commit, dispatch }, email){
-    console.log("pls send the email");
-    console.log(email);
-    let req = await this.$axios.post(`http://localhost:1337/email/send`, { email });
+  async requestPasswordReset({ commit, dispatch }, email){
+    let req = await this.$axios.post(`http://localhost:1337/request-password-reset`, { email });
     console.log(req);
   },
   setIsLoggedIn({ commit, dispatch }, bool){
